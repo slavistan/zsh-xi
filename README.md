@@ -1,6 +1,6 @@
 # zsh-xi
 
-E**x**ecute commands when spawning **i**nteractive zsh session, as if you had entered the commands manually.
+E***x***ecute commands when spawning ***i***nteractive zsh session, as if you had entered the commands manually. Optionally, start everything inside a terminal.
 
 ### Usage
 
@@ -16,7 +16,23 @@ echo "main.c" |
 EOF
 ```
 
-After your command finishes execution you will find it inside your active shell's history, as if you had spawned a shell and had entered the command yourself.
+After your command finishes execution you will find it inside your active
+shell's history, as if you had spawned a shell and had entered the command
+yourself.
+
+The shell may be **spawned inside a new terminal window** by passing the
+terminal-specific startup command prefix as arguments to `zsh-xi`.
+
+```sh
+# Spawn zsh in kitty and define foo=bar
+echo "foo=bar" | zsh-xi kitty
+
+# Spawn neovim in a gnome-terminal
+echo "nvim" | zsh-xi gnome-terminal --
+
+# Spawn st and display the weather
+echo "curl wttr.in" | zsh-xi st
+```
 
 ### Installation
 

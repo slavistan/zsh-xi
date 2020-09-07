@@ -1,11 +1,26 @@
 #!/usr/bin/env zsh
 
+# Prints commands to be sent to zshi.
 _commands() {
   cmd=$(cat -)
   cat <<-EOF
 		print -s "$cmd"
 		$cmd
+		rm -f "$tmpfile"
 	EOF
 }
 
-st zshi <(_commands) -i
+# TODO: Use inline command substitution instead of a tempfile.
+# 
+#  For reasons beyond me the '<()' construct fails to work with certain
+#  terminals in conjunction with 'zshi'. Try
+#    > kitty zshi <(echo nvim) -i
+#  or
+#    > gnome-terminal -- zshi <(echo nvim) -i
+#  
+#  Hence we're stuck using physical files for the moment (zsh's '=()' doesn't
+#  work either). See 'https://github.com/romkatv/zshi/issues/1'.
+trap _cleanup INT
+tmpfile=$(mktemp -p /tmp zsh-xi-XXXXXX)
+_commands > "$tmpfile"
+"$@" zshi "$tmpfile" -i
