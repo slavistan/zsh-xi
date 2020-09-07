@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+_commands() {
+  cmd=$(cat -)
+  cat <<-EOF
+		print -s "$cmd"
+		$cmd
+	EOF
+}
+
+st zshi <(_commands) -i
