@@ -1,6 +1,6 @@
 # zsh-xi
 
-E***x***ecute commands when spawning ***i***nteractive zsh session, as if you had entered the commands manually. Optionally, start everything inside a terminal.
+E**x**ecute commands when spawning **i**nteractive zsh session, almost as if you had entered the commands manually.
 
 ### Usage
 
