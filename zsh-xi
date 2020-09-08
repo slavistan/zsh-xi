@@ -1,26 +1,45 @@
 #!/usr/bin/env zsh
 
-# Prints commands to be sent to zshi.
-_commands() {
-  cmd=$(cat -)
-  cat <<-EOF
-		print -s "$cmd"
-		$cmd
-		rm -f "$tmpfile"
-	EOF
-}
+case "$1" in
+  -h|--help)
+    cat <<EOF
+Usage: ${0:A:t} [PREFIX]...
+Include a command read from stdin into the startup procedure of an interactive
+zsh session. Use the terminal specific startup command PREFIX to start the
+session in a new terminal instance.
 
-# TODO: Use inline command substitution instead of a tempfile.
-# 
-#  For reasons beyond me the '<()' construct fails to work with certain
-#  terminals in conjunction with 'zshi'. Try
-#    > kitty zshi <(echo nvim) -i
-#  or
-#    > gnome-terminal -- zshi <(echo nvim) -i
-#  
-#  Hence we're stuck using physical files for the moment (zsh's '=()' doesn't
-#  work either). See 'https://github.com/romkatv/zshi/issues/1'.
-trap _cleanup INT
+Examples:
+  # Spawn zsh in kitty and define foo=bar
+  echo "foo=bar" | zsh-xi kitty
+
+  # Spawn neovim in a gnome-terminal
+  echo "nvim" | zsh-xi gnome-terminal --
+
+  # Spawn st and display the weather
+  echo "curl wttr.in" | zsh-xi st
+
+Full documentation at <https://github.com/slavistan/zsh-xi>.
+EOF
+    exit
+    ;;
+esac
+
+# Read command from stdin and construct the instructions to be sourced by zshi,
+# namely
+#   - add the command to zsh's history
+#   - the command itself
+#   - delete the tempfile
 tmpfile=$(mktemp -p /tmp zsh-xi-XXXXXX)
-_commands > "$tmpfile"
+cmd=$(cat -)
+cat <<EOF > "$tmpfile"
+print -s "$cmd"
+$cmd
+rm -f "$tmpfile"
+EOF
 "$@" zshi "$tmpfile" -i
+
+# NOTE: We're stuck using physical tempfiles over process substitution, since
+# the cli of some terminals only forks and returns immediately, causing process
+# substitution to fail, as the temporary "file" no longer exists by the time
+# the terminal actually tries to source it.
+# For a quick demo try 'gnome-terminal -- zshi <(echo 'x=1') -i'.
