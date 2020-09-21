@@ -29,8 +29,8 @@ esac
 #   - add the command to zsh's history
 #   - the command itself
 #   - delete the tempfile
-tmpfile=$(mktemp -p /tmp zsh-xi-XXXXXX)
-cmd=$(cat -)
+tmpfile="$(mktemp -p /tmp zsh-xi-XXXXXX)"
+cmd="$(cat -)"
 cat <<EOF > "$tmpfile"
 print -s "$cmd"
 $cmd
@@ -43,3 +43,7 @@ EOF
 # substitution to fail, as the temporary "file" no longer exists by the time
 # the terminal actually tries to source it.
 # For a quick demo try 'gnome-terminal -- zshi <(echo 'x=1') -i'.
+
+# TODO(fix): Newline characters don't show up in history
+#   Try 'zsh-xi st<<<"echo \"A\nB\""'
+#   As a quickfix use multiple lines as input.
