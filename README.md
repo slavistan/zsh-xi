@@ -41,4 +41,5 @@ Requires **zshi** found [here](https://github.com/romkatv/zshi). To install simp
 ```sh
 sudo curl -L -o /usr/local/bin/zshi "https://raw.githubusercontent.com/romkatv/zshi/master/zshi"
 sudo curl -L -o /usr/local/bin/zsh-xi "https://raw.githubusercontent.com/slavistan/zsh-xi/master/zsh-xi"
+sudo chmod 755 /usr/local/bin/zshi /usr/local/bin/zsh-xi
 ```
